@@ -6,7 +6,7 @@ import { sendFormData } from './serverutils.js';
 import { resetEffects } from './imgeffects.js';
 
 
-export function initUploadForm() {
+export async function initUploadForm() {
   const uploadForm = document.querySelector('.img-upload__form');
   const uploadInput = uploadForm.querySelector('.img-upload__input');
   const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
@@ -130,7 +130,7 @@ export function initUploadForm() {
 
   cancelButton.addEventListener('click', closeForm);
 
-  uploadForm.addEventListener('submit', (event) => {
+  uploadForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     if (!pristine.validate()) {
@@ -211,26 +211,24 @@ export function initUploadForm() {
       document.addEventListener('keydown', onErrorEsc);
     }
 
+    try {
 
-    sendFormData(formData)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Ошибка отправки');
-        }
+      const responseFormData = await sendFormData(formData);
+      if (!responseFormData.ok) {
+        throw new Error('Ошибка отправки');
+      } else {
         resetScale();
         showSuccessMessage();
         closeForm();
-      })
-      .catch(() => {
-        showErrorMessage();
-      })
-      .finally(() => {
-        toggleSubmitButton(false);
-      });
+      }
+    } catch {
+      showErrorMessage();
+    } finally {
+      toggleSubmitButton(false);
+    }
   });
 
   initImageEffects();
   initScale();
 
 }
-

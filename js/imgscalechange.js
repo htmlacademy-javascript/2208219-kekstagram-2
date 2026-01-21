@@ -1,4 +1,4 @@
-const imgPreview = document.querySelector('.img-upload__preview');
+const imgPreview = document.querySelector('.img-upload__preview img');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');

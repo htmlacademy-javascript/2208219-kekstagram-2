@@ -63,7 +63,7 @@ export function initImageEffects() {
   }
 
   effectLevelSlider.noUiSlider.on('update', () => {
-    const sliderValue = effectLevelSlider.noUiSlider.get();
+    const sliderValue = Number.isInteger(Number(effectLevelSlider.noUiSlider.get())) ? Number(effectLevelSlider.noUiSlider.get()) : Number(effectLevelSlider.noUiSlider.get()).toFixed(1);
     effectLevelValue.value = sliderValue;
     applyEffect(sliderValue);
   });
@@ -85,7 +85,7 @@ export function initImageEffects() {
 
       if (currentEffect === 'none') {
         effectLevelContainer.classList.add('hidden');
-        effectLevelValue.value = '100.00';
+        effectLevelValue.value = '100';
         imagePreview.style.filter = '';
       } else {
         effectLevelContainer.classList.remove('hidden');
