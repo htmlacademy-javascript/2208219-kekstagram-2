@@ -9,6 +9,9 @@ const commentsList = bigPicture.querySelector('.social__comments');
 const showingComments = bigPicture.querySelector('.social__comment-shown-count');
 const body = document.querySelector('body');
 const closeButton = bigPicture.querySelector('#picture-cancel');
+const bigPictureImage = bigPicture.querySelector('.big-picture__img img');
+const likesCount = bigPicture.querySelector('.likes-count');
+const description = bigPicture.querySelector('.social__caption');
 
 let commentsToShowCount = commentsToShow;
 let currentComments = [];
@@ -21,17 +24,11 @@ function onBigPictureEsc(evt) {
 
 function openBigPicture(srcImg, likes, comments, descriptionOfPhoto) {
   commentsToShowCount = commentsToShow;
-  const img = bigPicture.querySelector('.big-picture__img img');
-  img.src = srcImg;
-
-  const likesCount = bigPicture.querySelector('.likes-count');
+  bigPictureImage.src = srcImg;
   likesCount.textContent = likes;
-
-  const description = bigPicture.querySelector('.social__caption');
   description.textContent = descriptionOfPhoto;
 
   bigPicture.classList.remove('hidden');
-
   body.classList.add('modal-open');
   currentComments = comments;
 

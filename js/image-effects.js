@@ -4,54 +4,53 @@ const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 let currentEffect = 'none';
+const EFFECTS = {
+  none: {
+    filter: '',
+    unit: '',
+    range: {},
+    step: 0,
+    start: 100,
+  },
+  chrome: {
+    filter: 'grayscale',
+    unit: '',
+    range: { min: 0, max: 1 },
+    step: 0.1,
+    start: 1,
+  },
+  sepia: {
+    filter: 'sepia',
+    unit: '',
+    range: { min: 0, max: 1 },
+    step: 0.1,
+    start: 1,
+  },
+  marvin: {
+    filter: 'invert',
+    unit: '%',
+    range: { min: 0, max: 100 },
+    step: 1,
+    start: 100,
+  },
+  phobos: {
+    filter: 'blur',
+    unit: 'px',
+    range: { min: 0, max: 3 },
+    step: 0.1,
+    start: 3,
+  },
+  heat: {
+    filter: 'brightness',
+    unit: '',
+    range: { min: 1, max: 3 },
+    step: 0.1,
+    start: 3,
+  },
+};
 
 
 export function initImageEffects() {
-
-  const EFFECTS = {
-    none: {
-      filter: '',
-      unit: '',
-      range: {},
-      step: 0,
-      start: 100,
-    },
-    chrome: {
-      filter: 'grayscale',
-      unit: '',
-      range: { min: 0, max: 1 },
-      step: 0.1,
-      start: 1,
-    },
-    sepia: {
-      filter: 'sepia',
-      unit: '',
-      range: { min: 0, max: 1 },
-      step: 0.1,
-      start: 1,
-    },
-    marvin: {
-      filter: 'invert',
-      unit: '%',
-      range: { min: 0, max: 100 },
-      step: 1,
-      start: 100,
-    },
-    phobos: {
-      filter: 'blur',
-      unit: 'px',
-      range: { min: 0, max: 3 },
-      step: 0.1,
-      start: 3,
-    },
-    heat: {
-      filter: 'brightness',
-      unit: '',
-      range: { min: 1, max: 3 },
-      step: 0.1,
-      start: 3,
-    },
-  };
 
   if (!effectLevelSlider.noUiSlider) {
     noUiSlider.create(effectLevelSlider, {

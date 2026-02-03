@@ -1,10 +1,10 @@
 import { showDataError } from './utils.js';
-import { openBigPicture } from './openclosephoto.js';
+import { openBigPicture } from './photo-modal.js';
 import { loadPhotosData } from './data.js';
-import { initFiltersHomepage } from './filtershomepage.js';
+import { initFiltersHomepage } from './homepage-filters.js';
+const pictures = document.querySelector('.pictures');
 
 export function initPictures(data) {
-  const pictures = document.querySelector('.pictures');
   const picture = document
     .querySelector('#picture')
     .content
@@ -31,7 +31,6 @@ export function initPictures(data) {
 }
 
 export function clearPictures() {
-  const pictures = document.querySelector('.pictures');
   const renderedPictures = pictures.querySelectorAll('.picture');
 
   renderedPictures.forEach((picture) => picture.remove());

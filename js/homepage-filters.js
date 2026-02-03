@@ -1,10 +1,10 @@
-import { clearPictures, initPictures } from './picturecreator.js';
+import { clearPictures, initPictures } from './create-pictures.js';
 import { debounce, randomFilterSort } from './utils.js';
 import { COUNTPHOTOSFORFILTER } from './constants.js';
+const filtersContainer = document.querySelector('.img-filters');
+const filterButtons = filtersContainer.querySelectorAll('.img-filters__button');
 
 export function initFiltersHomepage(data) {
-  const filtersContainer = document.querySelector('.img-filters');
-  const filterButtons = filtersContainer.querySelectorAll('.img-filters__button');
 
   filtersContainer.classList.remove('img-filters--inactive');
 
