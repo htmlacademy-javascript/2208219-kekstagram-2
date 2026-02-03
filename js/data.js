@@ -1,9 +1,9 @@
-import { newFetch } from './serverutils.js';
+import { getPhotos } from './server-utils.js';
 
 let photosData = [];
 
 export async function loadPhotosData() {
-  photosData = await newFetch();
+  photosData = await getPhotos();
   return photosData;
 }
 

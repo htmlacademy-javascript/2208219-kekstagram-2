@@ -1,24 +1,36 @@
-import { initScale } from './imgscalechange.js';
-import { initImageEffects } from './imgeffects.js';
-import { resetScale } from './imgscalechange.js';
+import { initScale } from './image-scale.js';
+import { initImageEffects } from './image-effects.js';
+import { resetScale } from './image-scale.js';
 import { onEsc } from './utils.js';
-import { sendFormData } from './serverutils.js';
-import { resetEffects } from './imgeffects.js';
+import { sendFormData } from './server-utils.js';
+import { resetEffects } from './image-effects.js';
+import { DESCRIPTION_MAX_LENGTH } from './constants.js';
+import { HASH_TAG_MAX_LENGTH } from './constants.js';
+const HASHTAG_REGEXP = /^#[a-zа-яё0-9]{1,19}$/i;
+const uploadForm = document.querySelector('.img-upload__form');
+const uploadInput = uploadForm.querySelector('.img-upload__input');
+const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
+const cancelButton = uploadForm.querySelector('.img-upload__cancel');
+const hashtagsInput = uploadForm.querySelector('.text__hashtags');
+const descriptionInput = uploadForm.querySelector('.text__description');
+const submitButton = uploadForm.querySelector('.img-upload__submit');
+const previewImage = uploadForm.querySelector('.img-upload__preview img');
+const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
+const body = document.body;
+const successTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
 
+const errorTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
+const messageTemplates = {
+  success: successTemplate,
+  error: errorTemplate,
+};
 
 export async function initUploadForm() {
-  const uploadForm = document.querySelector('.img-upload__form');
-  const uploadInput = uploadForm.querySelector('.img-upload__input');
-  const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
-  const cancelButton = uploadForm.querySelector('.img-upload__cancel');
-  const hashtagsInput = uploadForm.querySelector('.text__hashtags');
-  const descriptionInput = uploadForm.querySelector('.text__description');
-  const submitButton = uploadForm.querySelector('.img-upload__submit');
-  const previewImage = uploadForm.querySelector('.img-upload__preview img');
-  const effectsPreviews = uploadForm.querySelectorAll('.effects__preview');
-  const body = document.body;
-  const HASHTAG_REGEXP = /^#[a-zа-яё0-9]{1,19}$/i;
-
   const validateHashtags = (value) => {
     if (!value.trim()) {
       return '';
@@ -26,7 +38,7 @@ export async function initUploadForm() {
 
     const hashtags = value.trim().split(/\s+/);
 
-    if (hashtags.length > 5) {
+    if (hashtags.length > HASH_TAG_MAX_LENGTH) {
       return 'превышено количество хэштегов';
     }
 
@@ -102,12 +114,12 @@ export async function initUploadForm() {
     validateHashtags
   );
 
-  const validateDescription = (value) => value.length <= 140;
+  const validateDescription = (value) => value.length <= DESCRIPTION_MAX_LENGTH;
 
   pristine.addValidator(
     descriptionInput,
     validateDescription,
-    'Длина комментария больше 140 символов'
+    `Длина комментария больше ${DESCRIPTION_MAX_LENGTH} символов`
   );
 
   uploadInput.addEventListener('change', () => {
@@ -141,75 +153,45 @@ export async function initUploadForm() {
 
     const formData = new FormData(uploadForm);
 
-    function showSuccessMessage() {
-      const template = document.querySelector('#success')
-        .content
-        .querySelector('.success');
+    function showMessage(type) {
+      if (type === 'error') {
+        disableFormEsc();
+      }
 
-      const message = template.cloneNode(true);
+      const message = messageTemplates[type].cloneNode(true);
       document.body.appendChild(message);
 
-      function onSuccessEsc(evt) {
+      const buttonClass = type === 'success'
+        ? '.success__button'
+        : '.error__button';
+
+      function onEscPress(evt) {
         if (onEsc(evt)) {
-          closeSuccess();
+          closeMessage();
         }
       }
 
-      function closeSuccess() {
+      function closeMessage() {
         message.remove();
-        document.removeEventListener('keydown', onSuccessEsc);
+        document.removeEventListener('keydown', onEscPress);
+
+        if (type === 'error') {
+          enableFormEsc();
+        }
       }
 
-      message.querySelector('.success__button')
-        .addEventListener('click', closeSuccess);
+      message.querySelector(buttonClass)
+        .addEventListener('click', closeMessage);
 
       message.addEventListener('click', (evt) => {
         if (evt.target === message) {
-          closeSuccess();
+          closeMessage();
         }
       });
 
-      document.addEventListener('keydown', onSuccessEsc);
+      document.addEventListener('keydown', onEscPress);
     }
 
-
-    function showErrorMessage() {
-      disableFormEsc();
-
-      const template = document.querySelector('#error')
-        .content
-        .querySelector('.error');
-
-      const message = template.cloneNode(true);
-      document.body.appendChild(message);
-
-      const close = () => {
-        message.remove();
-      };
-
-      message.querySelector('.error__button')
-        .addEventListener('click', close);
-
-      message.addEventListener('click', (evt) => {
-        if (evt.target === message) {
-          close();
-        }
-      });
-
-      function onErrorEsc(evt) {
-        if (onEsc(evt)) {
-          closeError();
-        }
-      }
-
-      function closeError() {
-        message.remove();
-        document.removeEventListener('keydown', onErrorEsc);
-
-        enableFormEsc();
-      }
-      document.addEventListener('keydown', onErrorEsc);
-    }
 
     try {
 
@@ -218,11 +200,11 @@ export async function initUploadForm() {
         throw new Error('Ошибка отправки');
       } else {
         resetScale();
-        showSuccessMessage();
+        showMessage('success');
         closeForm();
       }
     } catch {
-      showErrorMessage();
+      showMessage('error');
     } finally {
       toggleSubmitButton(false);
     }

@@ -1,11 +1,11 @@
+const MIN_SCALE = 25;
+const MAX_SCALE = 100;
+const SCALE_STEP = 25;
 const imgPreview = document.querySelector('.img-upload__preview img');
 const scaleControlValue = document.querySelector('.scale__control--value');
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');
 
-const MIN_SCALE = 25;
-const MAX_SCALE = 100;
-const SCALE_STEP = 25;
 let currentScale = parseInt(scaleControlValue.value, 10);
 
 function updateScale() {

@@ -1,3 +1,7 @@
+const dataErrorTemplate = document.querySelector('#data-error')
+  .content
+  .querySelector('.data-error');
+
 export function getRandomFloor
 (number) {
   return Math.floor(Math.random() * number);
@@ -38,11 +42,7 @@ export function debounce(callback, timeoutDelay = 500) {
   };
 }
 export function showDataError() {
-  const template = document.querySelector('#data-error')
-    .content
-    .querySelector('.data-error');
-
-  const errorElement = template.cloneNode(true);
+  const errorElement = dataErrorTemplate.cloneNode(true);
 
   document.body.appendChild(errorElement);
 
